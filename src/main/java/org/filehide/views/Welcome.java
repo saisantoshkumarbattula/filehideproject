@@ -1,8 +1,16 @@
 package org.filehide.views;
 
+import org.filehide.dao.UserDAO;
+import org.filehide.model.User;
+import org.filehide.service.GenerateOTP;
+import org.filehide.service.SendOTPService;
+import org.filehide.service.UserService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
+import java.util.Scanner;
 
 public class Welcome {
     public void welcomeScreen(){
@@ -22,11 +30,57 @@ public class Welcome {
         }
     }
 
-    private void signUp() {
-
+    private void login() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Enter email to login : ");
+        String email = s.nextLine();
+        try {
+            if (UserDAO.isExists(email)) {
+                String generatedOTP = GenerateOTP.getOTP();
+                SendOTPService.sendOTP(email, generatedOTP, "login");
+                System.out.println("Enter otp :");
+                String otp = s.nextLine();
+                if(otp.equals(generatedOTP)){
+                    System.out.println("Welcome");
+                }else{
+                    System.err.println("Wrong Otp");
+                }
+            }else{
+                System.err.println("User not found");
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
-    private void login() {
-
+    private void signUp() {
+        Scanner s = new Scanner(System.in);
+        System.out.println("Enter name : ");
+        String name = s.nextLine();
+        System.out.println("Enter email : ");
+        String email = s.nextLine();
+        String generatedOTP = GenerateOTP.getOTP();
+        SendOTPService.sendOTP(email, generatedOTP, "signup");
+        System.out.println("Enter otp : ");
+        String otp = s.nextLine();
+        if(otp.equals(generatedOTP)){
+            try {
+                if(UserDAO.isExists(email)){
+                    System.err.println("User already exists, please login");
+                    return;
+                }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                throw new RuntimeException(e);
+            }
+            User user = new User(name, email);
+            int response = UserService.saveUser(user);
+            switch (response){
+                case 0 -> System.out.println("User already exists");
+                case 1 -> System.out.println("User saved");
+            }
+        }else{
+            System.err.println("Wrong Otp");
+        }
     }
 }

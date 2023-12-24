@@ -20,7 +20,7 @@ public class UserDAO {
     }
     public static int saveUser(User user) throws SQLException{
         Connection connection = MyConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement("insert into users values(default, ?, ?");
+        PreparedStatement statement = connection.prepareStatement("insert into users values(default, ?, ?)");
         statement.setString(1, user.getName());
         statement.setString(2,user.getEmail());
         return statement.executeUpdate();
