@@ -12,7 +12,7 @@ public class MyConnection {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Connection established");
+//        System.out.println("Connection established");
         return connection;
     }
     public static void closeConnection(){

@@ -1,6 +1,7 @@
 package org.filehide.views;
 
 import org.filehide.dao.UserDAO;
+import org.filehide.db.MyConnection;
 import org.filehide.model.User;
 import org.filehide.service.GenerateOTP;
 import org.filehide.service.SendOTPService;
@@ -16,8 +17,8 @@ public class Welcome {
     public void welcomeScreen(){
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Welcome to the app");
-        System.out.println("press 1. login\n2. signup\n0. exit");
-        int choice = 0;
+        System.out.println("press\n1. login\n2. signup\n0. exit");
+        int choice;
         try {
             choice = Integer.parseInt(bufferedReader.readLine());
         } catch (IOException e) {
@@ -26,7 +27,11 @@ public class Welcome {
         switch (choice){
             case 1 -> login();
             case 2 -> signUp();
-            case 0 -> System.exit(0);
+            case 0 -> {
+                System.err.println("Thank you for using file hide system");
+                MyConnection.closeConnection();
+                System.exit(0);
+            }
         }
     }
 
@@ -42,6 +47,7 @@ public class Welcome {
                 String otp = s.nextLine();
                 if(otp.equals(generatedOTP)){
                     System.out.println("Welcome");
+                    new UserView(email).home();
                 }else{
                     System.err.println("Wrong Otp");
                 }
