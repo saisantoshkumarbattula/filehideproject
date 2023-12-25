@@ -2,11 +2,11 @@ package org.filehide.controller;
 
 import org.filehide.views.Welcome;
 
+
 public class Main {
     public static void main(String[] args)  {
         Welcome welcome = new Welcome();
-        do {
+        while (true)
             welcome.welcomeScreen();
-        } while (true);
     }
 }

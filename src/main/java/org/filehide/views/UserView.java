@@ -28,8 +28,8 @@ public class UserView {
             int ch = Integer.parseInt(sc.nextLine());
             switch (ch) {
                 case 0 -> {
-                    System.err.println("Thanks for using our file hide system");
                     MyConnection.closeConnection();
+                    System.err.println("Thanks for using our file hide system");
                     System.exit(0);
                 }
                 case 1 -> {

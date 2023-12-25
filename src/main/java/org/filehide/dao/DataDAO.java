@@ -5,8 +5,10 @@ import org.filehide.model.Data;
 
 import java.io.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class DataDAO {
     public static List<Data> getAllFiles(String email) throws SQLException {
@@ -23,13 +25,14 @@ public class DataDAO {
 
     public static int hideFile(Data file) throws SQLException, IOException {
         Connection connection = MyConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement("insert into data values(default, ?, ?, ?, ?)");
+        PreparedStatement statement = connection.prepareStatement("insert into data values(default, ?, ?, ?, ?, ?)");
         statement.setString(1, file.getFileName());
         statement.setString(2, file.getPath());
         statement.setString(3, file.getEmail());
         File f = new File(file.getPath());
         FileReader fr = new FileReader(f);
         statement.setCharacterStream(4, fr, f.length());
+        statement.setString(5, new SimpleDateFormat("dd-MM-yyyy | hh:mm:ss a").format(new Date()));
         int response = statement.executeUpdate();
         fr.close();
         boolean status = f.delete();
